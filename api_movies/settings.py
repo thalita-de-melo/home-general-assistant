@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-8k)igm$*lkxu-x8kr+hmc%9d5f-$i=1u=8nbmg3h!llb-==4a5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -79,14 +79,10 @@ WSGI_APPLICATION = 'api_movies.wsgi.application'
 
 DATABASES = {
     'default': {
-        # postgresql
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'passw',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+
 }
 
 
