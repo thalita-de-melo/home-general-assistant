@@ -7,11 +7,21 @@
     <title>O que vamos fazer?</title>
 </head>
 <body>
-    <div class="container position-absolute top-50 start-50 translate-middle">
+    <div class="container-fluid position-absolute top-50 start-50 translate-middle">
         <div class="d-grid gap-2 col-6 mx-auto">
             <!--show movie-->
-            <h2 class="">{{movie}}</h2>
-            <a class="btn btn-primary" href="../random">Escolha outro</a>
+            <!-- get gif from imgs folder-->
+            {% load static %}
+            <img src="{% static 'michael.gif' %}" class="mx-auto img-fluid">
+            <!-- <img src="{{movie_image}}" class="img-fluid" alt="..."> -->
+            <h1 class=" mx-auto p-5">{{movie}}</h1>
+            <form  class="d-grid gap-2 col-6 mx-auto" method="post" action="{% url 'change-movie-status' movie.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Beleza vamos ver</button>
+                <a class="btn btn-primary" href="../random">Escolha outro</a>
+                <a type="button" class="btn btn-danger" href="../../home">Voltar</a>
+            </form>
+            
           </div>
     </div>
 </body>
