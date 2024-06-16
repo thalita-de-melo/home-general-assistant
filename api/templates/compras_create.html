@@ -1,0 +1,103 @@
+<!-- templates/compras_create.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Adicionar Item na Lista de Compras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-4">
+        <div id="copyAlert" class="alert alert-success" role="alert" style="display: none;">
+            Nomes dos produtos copiados para a área de transferência!
+        </div>
+        <h2>Adicionar Item na Lista de Compras</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_produto" class="form-label">Produto</label>
+                {{ form.produto }}
+            </div>
+            <div class="mb-3">
+                <label for="id_pessoa" class="form-label">Quem Adicionou</label>
+                <select name="pessoa" id="id_pessoa" class="form-select">
+                    {% for pessoa in pessoas %}
+                        <option value="{{ pessoa }}">{{ pessoa }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="id_categoria" class="form-label">Categoria</label>
+                <select name="categoria" id="id_categoria" class="form-select">
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria }}">{{ categoria }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+
+        <!-- Tabela de Compras -->
+        <!-- templates/compras_create.html -->
+
+        <div class="mt-5">
+            <h3>Lista de Compras</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Produto</th>
+                        <th>Pessoa</th>
+                        <th>Categoria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.produto }}</td>
+                        <td>{{ item.pessoa }}</td>
+                        <td>{{ item.categoria }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">Nenhum item encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button id="copyButton" class="btn btn-primary">Copiar nomes dos produtos</button>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('copyButton').addEventListener('click', function() {
+            // Cria um array com os nomes dos produtos
+            var productNames = Array.from(document.querySelectorAll('td:nth-child(2)')).map(td => td.textContent);
+        
+            // Cria um textarea temporário para copiar o texto
+            var tempTextArea = document.createElement('textarea');
+            tempTextArea.value = productNames.join('\n'); // Separa os nomes dos produtos por uma nova linha
+            document.body.appendChild(tempTextArea);
+        
+            // Seleciona o texto e copia para a área de transferência
+            tempTextArea.select();
+            document.execCommand('copy');
+        
+            // Remove o textarea temporário
+            document.body.removeChild(tempTextArea);
+        
+            // Mostra uma mensagem de confirmação
+            var copyAlert = document.getElementById('copyAlert');
+            copyAlert.style.display = 'block';
+            setTimeout(function() {
+            copyAlert.style.display = 'none';
+            }, 3000);
+        });
+        </script>
+
+</body>
+</html>
