@@ -110,6 +110,55 @@ class ComprasAddItem(APIView):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
         
+class GetListaCompras(APIView):
+    def get(self, request):
+        items = Compras.objects.exclude(comprado=True)
+        serializer = ComprasSerializer(items, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    
+    def post(self, request):
+        try:
+            item = Compras.objects.get(pk=request.data['id'])
+            item.comprado = True
+            item.data_comprado = datetime.datetime.now()
+            item.save()
+            return Response({'message': 'Item comprado com sucesso.'}, status=status.HTTP_200_OK)
+        except Compras.DoesNotExist:
+            return Response({'error': 'Item não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+from django.shortcuts import render, redirect
+from .forms import ComprasForm
+
+def compras_create(request):
+    categorias = [
+    "Alimentos",
+    "Bebidas",
+    "Limpeza",
+    "Higiene Pessoal",
+    "Frutas e Verduras",
+    "Carnes e Frios",
+    "Laticínios",
+    "Padaria",
+    "Confeitaria",
+    "Pet Shop"
+    ]
+
+    pessoas = [
+        'Thalita',
+        'Vivian'
+    ]
+    if request.method == 'POST':
+        form = ComprasForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')  # Redireciona para a página de lista de compras após salvar
+    else:
+        form = ComprasForm()
+
+    items = Compras.objects.exclude(comprado=True).order_by('-data_criacao')
+    
+    return render(request, 'compras_create.html', {'form': form, 'categorias': categorias, 'pessoas': pessoas, 'items': items})
+
 def get_data(request):
     data = list(Movies.objects.values())
     return JsonResponse(data, safe=False)

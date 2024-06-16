@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import path
 
 from api.views import MoviesList, MoviesCreateView, index, ChooseRandomMovie, \
-    ChangeMovieStatus, DeleteMovie, get_data, show_chart, ComprasAddItem
+    ChangeMovieStatus, DeleteMovie, get_data, show_chart, ComprasAddItem, GetListaCompras, \
+    compras_create
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,4 +16,6 @@ urlpatterns = [
     path('api/data/', get_data, name='api-data'),
     path('chart/', show_chart, name='show-chart'),
     path('api/compras/', ComprasAddItem.as_view(), name='compras-add-item'),
+    path('api/lista-compras/', GetListaCompras.as_view(), name='lista-compras'),
+    path('compras/create/', compras_create, name='compras_create'),
 ]

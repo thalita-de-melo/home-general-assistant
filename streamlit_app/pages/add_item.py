@@ -20,10 +20,15 @@ categorias = [
     "Pet Shop"
 ]
 
+pessoas = [
+    'Thalita',
+    'Vivian'
+]
+
 # Formulário para adicionar um novo item
 with st.form('add_item_form'):
     produto = st.text_input('Produto')
-    pessoa = st.text_input('Pessoa')
+    pessoa = st.selectbox('Pessoa', pessoas)
     categoria = st.selectbox('Categoria', categorias)
 
     submitted = st.form_submit_button('Adicionar')
