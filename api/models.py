@@ -13,3 +13,14 @@ class Movies(models.Model):
 
     def __str__(self):
         return self.nome
+    
+class Compras(models.Model):
+    produto = models.CharField(max_length=100)
+    pessoa = models.CharField(blank=False, max_length=30)
+    categoria = models.CharField(max_length=30)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    comprado = models.BooleanField(null=True)
+    data_comprado = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return self.produto

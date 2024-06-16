@@ -1,10 +1,11 @@
 import random
+import json
 
 from django.shortcuts import render
 
 from rest_framework import generics
-from .models import Movies
-from .serializers import MoviesSerializer
+from .models import Movies, Compras
+from .serializers import MoviesSerializer, ComprasSerializer
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -13,6 +14,9 @@ from rest_framework.views import APIView
 from django.shortcuts import render, redirect
 from .forms import MoviesForm
 
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.http import JsonResponse
 from django.http import HttpResponse
 from django.template import loader
 import datetime
@@ -65,6 +69,55 @@ class DeleteMovie(APIView):
             return Response({'message': 'Filme deletado com sucesso.'}, status=status.HTTP_200_OK)
         except Movies.DoesNotExist:
             return Response({'error': 'Filme não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ComprasAddItem(APIView):
+    def get(self, request):
+        items = list(Compras.objects.values())
+        return JsonResponse(items, safe=False)
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            produto = data.get('produto')
+            pessoa = data.get('pessoa')
+            categoria = data.get('categoria')
+            comprado = False
+            data_comprado = None
+
+            if not all([produto, pessoa, categoria]):
+                return JsonResponse({'error': 'Missing fields'}, status=400)
+
+            new_item = Compras.objects.create(
+                produto=produto,
+                pessoa=pessoa,
+                categoria=categoria,
+                comprado=comprado,
+                data_comprado=data_comprado
+            )
+
+            return JsonResponse({
+                'id': new_item.id,
+                'produto': new_item.produto,
+                'pessoa': new_item.pessoa,
+                'categoria': new_item.categoria,
+                'data_criacao': new_item.data_criacao,
+                'comprado': new_item.comprado,
+                'data_comprado': new_item.data_comprado
+            }, status=201)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+        
+def get_data(request):
+    data = list(Movies.objects.values())
+    return JsonResponse(data, safe=False)
+
+from django.shortcuts import render
+
+def show_chart(request):
+    return render(request, 'chart.html')
 
 def index(request):
     # send the template index
