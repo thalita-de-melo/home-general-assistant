@@ -11,3 +11,6 @@ urllib3==2.2.1
 gunicorn==22.0.0
 streamlit
 pyperclip
+django-celery
+groq
+python-dotenv
